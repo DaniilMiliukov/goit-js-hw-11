@@ -12,9 +12,11 @@ let pageNumber = 1;
 export async function onFormSubmit(evt) {
   try {
     evt.preventDefault();
+    pageNr = 1;
     cleanGallery();
     const inputFormData = creatValue(evt);
     const value = inputFormData.searchQuery;
+  
 
     if (value !== '') {
       const response = await fetchImages(value, pageNumber);
@@ -24,13 +26,21 @@ export async function onFormSubmit(evt) {
         Notiflix.Notify.failure(
           'Sorry, there are no images matching your search query. Please try again.'
         );
-      } else {
+      } else if (response.totalHits < 40) {
         Notiflix.Notify.success(
           `Hooray! We found ${response.totalHits} images.`
         );
         renderImageList(response.hits);
-        refs.btnLoadMore.style.display = 'block';
+        refs.btnLoadMore.style.display = 'none';
         gallerySimpleLightbox.refresh();
+
+      }  else {
+        Notiflix.Notify.success(
+          `Hooray! We found ${response.totalHits} images.`
+        );
+        renderImageList(response.hits);
+        gallerySimpleLightbox.refresh();
+        refs.btnLoadMore.style.display = 'block';
       }
     }
   } catch (error) {
@@ -43,8 +53,8 @@ export async function onLoadMoreInfo(evt) {
     const value = refs.form.elements.searchQuery.value;
     const response = await fetchImages(value, pageNumber);
     renderImageList(response.hits);
-
-    if (response.hits.length < 40) {
+    gallerySimpleLightbox.refresh();
+    if (response.totalHits - 40 < 40) {
       refs.btnLoadMore.style.display = 'none';
       Notiflix.Notify.info(
         "We're sorry, but you've reached the end of search results."
