@@ -54,13 +54,13 @@ export async function onLoadMoreInfo(evt) {
     const response = await fetchImages(value, pageNumber);
     renderImageList(response.hits);
     gallerySimpleLightbox.refresh();
-    if (response.totalHits - 40 < 40) {
-      refs.btnLoadMore.style.display = 'none';
-      Notiflix.Notify.info(
-        "We're sorry, but you've reached the end of search results."
-      );
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
+    if (response.totalHits / 40 < pageNumber) {
+            refs.btnLoadMore.style.display = 'none';
+            Notiflix.Notify.info(
+              "We're sorry, but you've reached the end of search results."
+            );
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
