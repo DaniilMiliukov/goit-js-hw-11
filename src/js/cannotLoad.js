@@ -12,7 +12,7 @@ let pageNumber = 1;
 export async function onFormSubmit(evt) {
   try {
     evt.preventDefault();
-    pageNr = 1;
+    pageNumber = 1;
     cleanGallery();
     const inputFormData = creatValue(evt);
     const value = inputFormData.searchQuery;
